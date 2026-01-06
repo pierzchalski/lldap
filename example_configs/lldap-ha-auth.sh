@@ -41,7 +41,7 @@ if [[ $? -ne 0 ]]; then
     log "Auth failed"
     exit 1
 fi
-TOKEN=$(jq -e -r .token <<< $RESPONSE)
+TOKEN=$(jq -e -r .token <<< "$RESPONSE")
 if [[ $? -ne 0 ]]; then
     log "Failed to parse token"
     exit 1
@@ -53,18 +53,18 @@ if [[ $? -ne 0 ]]; then
     exit 1
 fi
 
-USER_JSON=$(jq -e .data.user <<< $RESPONSE)
+USER_JSON=$(jq -e .data.user <<< "$RESPONSE")
 if [[ $? -ne 0 ]]; then
     log "Failed to parse user json"
     exit 1
 fi
 
-if [[ ! -z "$2" ]] && ! jq -e '.groups|map(.displayName)|index("'"$2"'")' <<< $USER_JSON > /dev/null 2>&1; then
+if [[ ! -z "$2" ]] && ! jq -e '.groups|map(.displayName)|index("'"$2"'")' <<< "$USER_JSON" > /dev/null 2>&1; then
 	log "User is not in group '$2'"
 	exit 1
 fi
 
-DISPLAY_NAME=$(jq -r .displayName <<< $USER_JSON)
+DISPLAY_NAME=$(jq -r .displayName <<< "$USER_JSON")
 
 IS_ADMIN=false
 if [[ ! -z "$3" ]] && jq -e '.groups|map(.displayName)|index("'"$3"'")' <<< "$USER_JSON" > /dev/null 2>&1; then
